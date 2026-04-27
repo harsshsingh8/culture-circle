@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
@@ -7,66 +9,78 @@ export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing session on mount
-    const storedUser = localStorage.getItem('luxecart_user');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (e) {
-        localStorage.removeItem('luxecart_user');
+    const initAuth = async () => {
+      const storedUser = localStorage.getItem('luxecart_user');
+      const token = localStorage.getItem('luxecart_token');
+      
+      if (storedUser && token) {
+        try {
+          // Verify token with backend
+          const res = await fetch(`${API_URL}/auth/me`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          const data = await res.json();
+          
+          if (data.success) {
+            setUser(data.data);
+          } else {
+            localStorage.removeItem('luxecart_user');
+            localStorage.removeItem('luxecart_token');
+          }
+        } catch (e) {
+          localStorage.removeItem('luxecart_user');
+          localStorage.removeItem('luxecart_token');
+        }
       }
-    }
-    setIsLoading(false);
+      setIsLoading(false);
+    };
+    initAuth();
   }, []);
 
   const login = useCallback(async (email, password) => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Check if user exists in localStorage
-    const users = JSON.parse(localStorage.getItem('luxecart_users') || '[]');
-    const foundUser = users.find(u => u.email === email && u.password === password);
-    
-    if (foundUser) {
-      const { password: _, ...userWithoutPassword } = foundUser;
-      setUser(userWithoutPassword);
-      localStorage.setItem('luxecart_user', JSON.stringify(userWithoutPassword));
-      return { success: true };
+    try {
+      const res = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      
+      const data = await res.json();
+      
+      if (data.success) {
+        setUser(data.data);
+        localStorage.setItem('luxecart_user', JSON.stringify(data.data));
+        localStorage.setItem('luxecart_token', data.data.token);
+        return { success: true };
+      }
+      
+      return { success: false, error: data.message };
+    } catch (error) {
+      return { success: false, error: 'Network error. Please try again.' };
     }
-    
-    return { success: false, error: 'Invalid email or password' };
   }, []);
 
   const signup = useCallback(async (name, email, password) => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Check if user already exists
-    const users = JSON.parse(localStorage.getItem('luxecart_users') || '[]');
-    const existingUser = users.find(u => u.email === email);
-    
-    if (existingUser) {
-      return { success: false, error: 'An account with this email already exists' };
+    try {
+      const res = await fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+      
+      const data = await res.json();
+      
+      if (data.success) {
+        setUser(data.data);
+        localStorage.setItem('luxecart_user', JSON.stringify(data.data));
+        localStorage.setItem('luxecart_token', data.data.token);
+        return { success: true };
+      }
+      
+      return { success: false, error: data.message };
+    } catch (error) {
+      return { success: false, error: 'Network error. Please try again.' };
     }
-    
-    // Create new user
-    const newUser = {
-      id: Date.now(),
-      name,
-      email,
-      password,
-      createdAt: new Date().toISOString(),
-      avatar: null
-    };
-    
-    users.push(newUser);
-    localStorage.setItem('luxecart_users', JSON.stringify(users));
-    
-    const { password: _, ...userWithoutPassword } = newUser;
-    setUser(userWithoutPassword);
-    localStorage.setItem('luxecart_user', JSON.stringify(userWithoutPassword));
-    
-    return { success: true };
   }, []);
 
   const logout = useCallback(() => {
@@ -75,22 +89,31 @@ export function AuthProvider({ children }) {
   }, []);
 
   const updateProfile = useCallback(async (updates) => {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    const updatedUser = { ...user, ...updates };
-    setUser(updatedUser);
-    localStorage.setItem('luxecart_user', JSON.stringify(updatedUser));
-    
-    // Update in users list too
-    const users = JSON.parse(localStorage.getItem('luxecart_users') || '[]');
-    const userIndex = users.findIndex(u => u.id === user.id);
-    if (userIndex !== -1) {
-      users[userIndex] = { ...users[userIndex], ...updates };
-      localStorage.setItem('luxecart_users', JSON.stringify(users));
+    try {
+      const token = localStorage.getItem('luxecart_token');
+      const res = await fetch(`${API_URL}/auth/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(updates)
+      });
+      
+      const data = await res.json();
+      
+      if (data.success) {
+        setUser(data.data);
+        localStorage.setItem('luxecart_user', JSON.stringify(data.data));
+        localStorage.setItem('luxecart_token', data.data.token);
+        return { success: true };
+      }
+      
+      return { success: false, error: data.message };
+    } catch (error) {
+      return { success: false, error: 'Network error. Please try again.' };
     }
-    
-    return { success: true };
-  }, [user]);
+  }, []);
 
   return (
     <AuthContext.Provider

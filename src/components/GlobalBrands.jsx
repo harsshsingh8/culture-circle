@@ -1,24 +1,38 @@
 import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, ChevronLeft, ChevronRight, ShoppingBag } from 'lucide-react';
-import { allProducts } from '../data/products';
 import { useCart } from '../context/CartContext';
 import PayPalCheckout from './PayPalButton';
+import { api } from '../services/api';
 
-const brandProducts = allProducts.slice(10, 20);
 const filters = ['UNISEX', 'MEN', 'WOMEN'];
 
 export default function GlobalBrands() {
   const [activeFilter, setActiveFilter] = useState('UNISEX');
   const [checkoutProduct, setCheckoutProduct] = useState(null);
+  const [products, setProducts] = useState([]);
   const { toggleWishlist, isInWishlist } = useCart();
   const scrollRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await api.getProducts();
+        if (data.success) {
+          setProducts(data.data.slice(10, 20));
+        }
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      }
+    };
+    fetchProducts();
+  }, []);
+
   const filteredProducts = activeFilter === 'UNISEX'
-    ? brandProducts
-    : brandProducts.filter(p => p.category === activeFilter.toLowerCase());
+    ? products
+    : products.filter(p => p.category === activeFilter.toLowerCase());
 
   const checkScroll = () => {
     if (scrollRef.current) {

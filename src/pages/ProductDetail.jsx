@@ -1,15 +1,48 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Heart, ShoppingBag, Star, Truck, Shield, RotateCcw, ChevronLeft, Minus, Plus } from 'lucide-react';
-import { getProductById } from '../data/products';
+import { Heart, ShoppingBag, Star, Truck, Shield, RotateCcw, ChevronLeft, Minus, Plus, Loader } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import PayPalCheckout from '../components/PayPalButton';
+import { api } from '../services/api';
 
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const product = getProductById(id);
   const { addToCart, toggleWishlist, isInWishlist } = useCart();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const data = await api.getProduct(id);
+        if (data.success) {
+          setProduct(data.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch product:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProduct();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader className="w-8 h-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-500">Product not found</p>
+      </div>
+    );
+  }
 
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
