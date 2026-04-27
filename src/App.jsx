@@ -1,10 +1,12 @@
+import { useEffect } from 'react'
+import { BrowserRouter, Routes, Route, useLocation, Link } from 'react-router-dom'
 import { PayPalScriptProvider } from '@paypal/react-paypal-js'
+import { CartProvider } from './context/CartContext'
 import Header from './components/Header'
-import HeroCarousel from './components/HeroCarousel'
-import ProductShowcase from './components/ProductShowcase'
-import MediaMentions from './components/MediaMentions'
-import GlobalBrands from './components/GlobalBrands'
 import Footer from './components/Footer'
+import Home from './pages/Home'
+import ProductDetail from './pages/ProductDetail'
+import CartPage from './pages/CartPage'
 
 const paypalOptions = {
   'client-id': 'test',
@@ -12,20 +14,40 @@ const paypalOptions = {
   intent: 'capture',
 };
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
+function AppContent() {
+  return (
+    <div className="min-h-screen bg-white">
+      <ScrollToTop />
+      <Header />
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/cart" element={<CartPage />} />
+        </Routes>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
 function App() {
   return (
-    <PayPalScriptProvider options={paypalOptions}>
-      <div className="min-h-screen bg-white">
-        <Header />
-        <main>
-          <HeroCarousel />
-          <ProductShowcase />
-          <MediaMentions />
-          <GlobalBrands />
-        </main>
-        <Footer />
-      </div>
-    </PayPalScriptProvider>
+    <BrowserRouter>
+      <CartProvider>
+        <PayPalScriptProvider options={paypalOptions}>
+          <AppContent />
+        </PayPalScriptProvider>
+      </CartProvider>
+    </BrowserRouter>
   )
 }
 

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Menu, Search, X, Heart, ShoppingBag, User } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
 const promoMessages = [
   "MYSTERY BOX 2.0 IS LIVE - FREE SHIPPING WORLDWIDE",
@@ -11,6 +13,8 @@ export default function Header() {
   const [currentPromo, setCurrentPromo] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const { cartCount } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -39,7 +43,7 @@ export default function Header() {
               >
                 <Menu className="w-6 h-6" />
               </button>
-              <a href="/" className="flex items-center">
+              <Link to="/" className="flex items-center">
                 <span className="text-xl sm:text-2xl font-bold tracking-tight flex items-center gap-2">
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
@@ -48,7 +52,7 @@ export default function Header() {
                   </svg>
                   LUXE CART
                 </span>
-              </a>
+              </Link>
             </div>
 
             {/* Right: Actions */}
@@ -60,15 +64,20 @@ export default function Header() {
               >
                 <Search className="w-5 h-5" />
               </button>
-              <button className="hidden sm:flex p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Wishlist">
-                <Heart className="w-5 h-5" />
-              </button>
               <button className="hidden sm:flex p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Account">
                 <User className="w-5 h-5" />
               </button>
-              <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors relative" aria-label="Cart">
+              <button
+                onClick={() => navigate('/cart')}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors relative"
+                aria-label="Cart"
+              >
                 <ShoppingBag className="w-5 h-5" />
-                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-black text-white text-[10px] rounded-full flex items-center justify-center">0</span>
+                {cartCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-600 text-white text-[10px] rounded-full flex items-center justify-center font-bold">
+                    {cartCount}
+                  </span>
+                )}
               </button>
               <a
                 href="#app"
