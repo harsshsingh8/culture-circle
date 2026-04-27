@@ -1,10 +1,60 @@
 import { useState } from 'react';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { CreditCard, X } from 'lucide-react';
 
 export default function PayPalCheckout({ product, onClose }) {
   const [{ isPending }] = usePayPalScriptReducer();
   const [paidFor, setPaidFor] = useState(false);
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  // Require login before checkout
+  if (!isAuthenticated) {
+    return (
+      <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 animate-fade-in-up">
+        <div className="bg-white rounded-2xl p-6 max-w-md w-full">
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold mb-2">Login Required</h3>
+            <p className="text-gray-500 text-sm">Please sign in to complete your purchase</p>
+          </div>
+          
+          <div className="space-y-3">
+            <button
+              onClick={() => {
+                onClose();
+                navigate('/login', { state: { from: '/cart' } });
+              }}
+              className="w-full py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-colors"
+            >
+              Sign In
+            </button>
+            <button
+              onClick={() => {
+                onClose();
+                navigate('/signup', { state: { from: '/cart' } });
+              }}
+              className="w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Create Account
+            </button>
+            <button
+              onClick={onClose}
+              className="w-full py-3 text-gray-500 font-medium hover:text-gray-700 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
   const [error, setError] = useState(null);
 
   const handleApprove = (orderID) => {

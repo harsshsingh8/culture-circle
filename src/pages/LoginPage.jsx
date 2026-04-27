@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, ChevronLeft, Loader } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const { login } = useAuth();
   
   const [email, setEmail] = useState('');
@@ -15,7 +16,8 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [touched, setTouched] = useState({});
 
-  const redirect = searchParams.get('redirect') || '/';
+  // Get redirect URL from location state or query params
+  const from = location.state?.from || searchParams.get('redirect') || '/';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,7 +34,7 @@ export default function LoginPage() {
     setIsLoading(false);
 
     if (result.success) {
-      navigate(redirect, { replace: true });
+      navigate(from, { replace: true });
     } else {
       setError(result.error);
     }

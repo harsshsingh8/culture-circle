@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { User, Mail, Lock, Eye, EyeOff, ChevronLeft, Loader, CheckCircle, XCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function SignupPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { signup } = useAuth();
   
   const [name, setName] = useState('');
@@ -14,6 +15,8 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const from = location.state?.from || '/';
 
   const passwordStrength = (pwd) => {
     let score = 0;
@@ -58,7 +61,7 @@ export default function SignupPage() {
     setIsLoading(false);
 
     if (result.success) {
-      navigate('/', { replace: true });
+      navigate(from, { replace: true });
     } else {
       setError(result.error);
     }
