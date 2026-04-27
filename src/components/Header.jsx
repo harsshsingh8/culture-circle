@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { Menu, Search, X, Heart, ShoppingBag, User } from 'lucide-react';
 
 const promoMessages = [
-  "MYSTERY BOX 2.0 IS LIVE",
-  "CULTURED BIRTHDAY SALE IS LIVE - UPTO 75% OFF",
-  "FREE SHIPPING ON ORDERS ABOVE ₹5000"
+  "MYSTERY BOX 2.0 IS LIVE - FREE SHIPPING WORLDWIDE",
+  "SUMMER SALE IS LIVE - UP TO 75% OFF",
+  "FREE EXPRESS SHIPPING ON ORDERS ABOVE $150"
 ];
 
 export default function Header() {
@@ -40,7 +40,14 @@ export default function Header() {
                 <Menu className="w-6 h-6" />
               </button>
               <a href="/" className="flex items-center">
-                <span className="text-xl sm:text-2xl font-bold tracking-tight">CULTURE CIRCLE</span>
+                <span className="text-xl sm:text-2xl font-bold tracking-tight flex items-center gap-2">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <path d="M16 10a4 4 0 0 1-8 0"/>
+                  </svg>
+                  LUXE CART
+                </span>
               </a>
             </div>
 

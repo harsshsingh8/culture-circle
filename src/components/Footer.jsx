@@ -55,7 +55,14 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
         {/* Logo */}
         <div className="mb-10">
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">CULTURE CIRCLE</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight flex items-center gap-2">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            LUXE CART
+          </h2>
         </div>
 
         {/* Links Grid */}
@@ -122,19 +129,23 @@ export default function Footer() {
             <ul className="space-y-3.5">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
-                <span className="text-sm text-gray-300">Two Horizon Centre, DLF Phase 5, Sector 43, Gurugram, Haryana 122002</span>
+                <span className="text-sm text-gray-300">350 Fifth Avenue, New York, NY 10118, USA</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <MapPin className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                <span className="text-sm text-gray-300">1 Canada Square, Canary Wharf, London E14 5AB, UK</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <Clock className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
-                <span className="text-sm text-gray-300">Monday to Saturday, 10:30am to 11:00pm</span>
+                <span className="text-sm text-gray-300">24/7 Customer Support</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                <span className="text-sm text-gray-300">Whatsapp: +91 8796079922</span>
+                <span className="text-sm text-gray-300">US: +1 (888) 555-0199 | UK: +44 20 7946 0958</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                <span className="text-sm text-gray-300">customersupport@culture-circle.com</span>
+                <span className="text-sm text-gray-300">support@luxecart.com</span>
               </li>
             </ul>
           </div>
@@ -216,8 +227,16 @@ export default function Footer() {
 
             {/* Copyright */}
             <div className="text-center sm:text-right">
-              <p className="text-xs text-gray-500">© 2026 CultureCircle — All rights reserved</p>
-              <p className="text-xs text-gray-600 mt-1">METACIRCLES TECHNOLOGIES PVT LTD</p>
+              <p className="text-xs text-gray-500">© 2026 LuxeCart — All rights reserved</p>
+              <p className="text-xs text-gray-600 mt-1">LUXE CART GLOBAL INC.</p>
+              <div className="flex items-center gap-2 mt-2">
+                <svg className="w-6 h-4" viewBox="0 0 48 32" fill="none">
+                  <rect width="48" height="32" rx="4" fill="#003087"/>
+                  <path d="M18.6 8H13l-3.2 16h3.8l1-5h2.8c3.2 0 5.4-1.6 6-5.2.3-1.8-.2-3.2-1.4-4.2C21.2 8.6 20 8 18.6 8zm-.8 5.6c-.2 1.2-1.2 1.2-2.2 1.2h-1.4l.8-4h1.4c1 0 2 .2 1.8 1.4.1.6 0 1-.4 1.4z" fill="#FFFFFF"/>
+                  <path d="M34.6 8H29l-3.2 16h3.8l1-5h2.8c3.2 0 5.4-1.6 6-5.2.3-1.8-.2-3.2-1.4-4.2C37.2 8.6 36 8 34.6 8zm-.8 5.6c-.2 1.2-1.2 1.2-2.2 1.2h-1.4l.8-4h1.4c1 0 2 .2 1.8 1.4.1.6 0 1-.4 1.4z" fill="#FFFFFF"/>
+                </svg>
+                <span className="text-xs text-gray-500">Secure PayPal Payments</span>
+              </div>
             </div>
           </div>
         </div>

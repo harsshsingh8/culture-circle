@@ -1,17 +1,18 @@
 import { useRef, useState, useEffect } from 'react';
-import { Heart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Heart, ChevronLeft, ChevronRight, ShoppingBag } from 'lucide-react';
+import PayPalCheckout from './PayPalButton';
 
 const brandProducts = [
   {
     id: 1,
     name: "Coach Tabby Shoulder Bag 26",
     brand: "Coach",
-    price: 24999,
-    originalPrice: 45000,
+    price: 320,
+    originalPrice: 575,
     discount: 44,
     badge: "LUXURY",
     badgeColor: "bg-gray-900",
-    emi: 2083,
+    emi: 27,
     image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&h=400&fit=crop",
     category: "women"
   },
@@ -19,12 +20,12 @@ const brandProducts = [
     id: 2,
     name: "Prada Re-Nylon Bucket Hat",
     brand: "Prada",
-    price: 45999,
-    originalPrice: 68000,
+    price: 590,
+    originalPrice: 870,
     discount: 32,
     badge: "DESIGNER",
     badgeColor: "bg-black",
-    emi: 3833,
+    emi: 49,
     image: "https://images.unsplash.com/photo-1575428652377-a2697242636b?w=400&h=400&fit=crop",
     category: "unisex"
   },
@@ -32,12 +33,12 @@ const brandProducts = [
     id: 3,
     name: "Seiko 5 Sports SRPD51K1",
     brand: "Seiko",
-    price: 18999,
-    originalPrice: 28000,
+    price: 245,
+    originalPrice: 360,
     discount: 32,
     badge: "WATCHES",
     badgeColor: "bg-blue-700",
-    emi: 1583,
+    emi: 20,
     image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=400&h=400&fit=crop",
     category: "men"
   },
@@ -45,12 +46,12 @@ const brandProducts = [
     id: 4,
     name: "Stussy Basic Stussy Tee",
     brand: "Stussy",
-    price: 4999,
-    originalPrice: 7999,
+    price: 64,
+    originalPrice: 102,
     discount: 37,
     badge: "STREETWEAR",
     badgeColor: "bg-amber-600",
-    emi: 417,
+    emi: 5,
     image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop",
     category: "unisex"
   },
@@ -58,12 +59,12 @@ const brandProducts = [
     id: 5,
     name: "Kenzo Tiger Crest Hoodie",
     brand: "Kenzo",
-    price: 22999,
-    originalPrice: 35999,
+    price: 295,
+    originalPrice: 462,
     discount: 36,
     badge: "PREMIUM",
     badgeColor: "bg-green-700",
-    emi: 1917,
+    emi: 25,
     image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400&h=400&fit=crop",
     category: "men"
   },
@@ -71,12 +72,12 @@ const brandProducts = [
     id: 6,
     name: "Karl Lagerfeld K/Signature Tote",
     brand: "Karl Lagerfeld",
-    price: 18999,
-    originalPrice: 32000,
+    price: 245,
+    originalPrice: 410,
     discount: 41,
     badge: "HANDBAGS",
     badgeColor: "bg-purple-700",
-    emi: 1583,
+    emi: 20,
     image: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=400&h=400&fit=crop",
     category: "women"
   },
@@ -84,12 +85,12 @@ const brandProducts = [
     id: 7,
     name: "LEGO Technic Ferrari Daytona",
     brand: "LEGO",
-    price: 29999,
-    originalPrice: 39999,
+    price: 385,
+    originalPrice: 515,
     discount: 25,
     badge: "COLLECTIBLES",
     badgeColor: "bg-red-700",
-    emi: 2500,
+    emi: 32,
     image: "https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?w=400&h=400&fit=crop",
     category: "unisex"
   },
@@ -97,12 +98,12 @@ const brandProducts = [
     id: 8,
     name: "Adidas Yeezy Boost 350 V2",
     brand: "Adidas Yeezy",
-    price: 21999,
-    originalPrice: 28999,
+    price: 282,
+    originalPrice: 372,
     discount: 24,
     badge: "HYPE",
     badgeColor: "bg-orange-600",
-    emi: 1833,
+    emi: 24,
     image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400&h=400&fit=crop",
     category: "unisex"
   },
@@ -110,12 +111,12 @@ const brandProducts = [
     id: 9,
     name: "Air Jordan 4 Retro Military Black",
     brand: "Air Jordan",
-    price: 18999,
-    originalPrice: 34995,
+    price: 245,
+    originalPrice: 450,
     discount: 46,
     badge: "SELLING FAST",
     badgeColor: "bg-amber-500",
-    emi: 1583,
+    emi: 20,
     image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=400&h=400&fit=crop",
     category: "men"
   },
@@ -123,12 +124,12 @@ const brandProducts = [
     id: 10,
     name: "Rolex Submariner Date Homage",
     brand: "Rolex",
-    price: 549999,
-    originalPrice: 899999,
+    price: 7050,
+    originalPrice: 11550,
     discount: 39,
     badge: "LUXURY",
     badgeColor: "bg-gray-900",
-    emi: 45833,
+    emi: 588,
     image: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=400&h=400&fit=crop",
     category: "men"
   }
@@ -139,6 +140,7 @@ const filters = ['UNISEX', 'MEN', 'WOMEN'];
 export default function GlobalBrands() {
   const [activeFilter, setActiveFilter] = useState('UNISEX');
   const [wishlist, setWishlist] = useState(new Set());
+  const [checkoutProduct, setCheckoutProduct] = useState(null);
   const scrollRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -278,15 +280,24 @@ export default function GlobalBrands() {
                       {product.name}
                     </h3>
                     <div className="flex items-baseline gap-2 mb-1">
-                      <span className="text-base sm:text-lg font-bold text-red-600">₹{product.price.toLocaleString()}</span>
-                      <span className="text-xs text-gray-400 line-through">₹{product.originalPrice.toLocaleString()}</span>
+                      <span className="text-base sm:text-lg font-bold text-red-600">${product.price.toLocaleString()}</span>
+                      <span className="text-xs text-gray-400 line-through">${product.originalPrice.toLocaleString()}</span>
                     </div>
                     <p className="text-[10px] sm:text-xs text-gray-500 mb-2.5">
-                      EMI @INR {product.emi.toLocaleString()}/Month
+                      Pay ${product.emi}/mo
                     </p>
-                    <button className="w-full py-2 bg-black text-white text-xs font-medium rounded-lg hover:bg-gray-800 transition-colors">
-                      Explore
-                    </button>
+                    <div className="flex gap-2">
+                      <button className="flex-1 py-2 bg-black text-white text-xs font-medium rounded-lg hover:bg-gray-800 transition-colors">
+                        Explore
+                      </button>
+                      <button
+                        onClick={() => setCheckoutProduct(product)}
+                        className="py-2 px-3 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                        title="Buy Now with PayPal"
+                      >
+                        <ShoppingBag className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -294,6 +305,13 @@ export default function GlobalBrands() {
           </div>
         </div>
       </div>
+
+      {checkoutProduct && (
+        <PayPalCheckout
+          product={checkoutProduct}
+          onClose={() => setCheckoutProduct(null)}
+        />
+      )}
     </section>
   );
 }

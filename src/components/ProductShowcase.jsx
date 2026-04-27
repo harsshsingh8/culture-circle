@@ -1,124 +1,125 @@
 import { useState, useRef, useEffect } from 'react';
-import { Heart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Heart, ChevronLeft, ChevronRight, ShoppingBag } from 'lucide-react';
+import PayPalCheckout from './PayPalButton';
 
 const products = [
   {
     id: 1,
     name: "Air Jordan 1 RETRO High OG Yellow Toe Taxi",
-    price: 14999,
-    originalPrice: 64995,
+    price: 189,
+    originalPrice: 820,
     discount: 77,
-    badge: "UPTO 77% OFF",
+    badge: "UP TO 77% OFF",
     badgeColor: "bg-red-600",
-    emi: 1250,
+    emi: 16,
     image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=400&h=400&fit=crop",
     category: "men"
   },
   {
     id: 2,
     name: "Adidas Yeezy Slide Dark Onyx",
-    price: 8999,
-    originalPrice: 12999,
+    price: 115,
+    originalPrice: 165,
     discount: 31,
     badge: "SELLING FAST",
     badgeColor: "bg-amber-500",
-    emi: 750,
+    emi: 10,
     image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400&h=400&fit=crop",
     category: "unisex"
   },
   {
     id: 3,
     name: "Nike Dunk Low Retro Panda",
-    price: 9999,
-    originalPrice: 22995,
+    price: 128,
+    originalPrice: 295,
     discount: 57,
     badge: "NEW ARRIVAL",
     badgeColor: "bg-green-600",
-    emi: 833,
+    emi: 11,
     image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop",
     category: "unisex"
   },
   {
     id: 4,
     name: "New Balance 550 White Green",
-    price: 12999,
-    originalPrice: 18999,
+    price: 165,
+    originalPrice: 245,
     discount: 32,
     badge: "INSTANT",
     badgeColor: "bg-blue-600",
-    emi: 1083,
+    emi: 14,
     image: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=400&fit=crop",
     category: "men"
   },
   {
     id: 5,
     name: "Crocs Classic Clog White",
-    price: 3499,
-    originalPrice: 5995,
+    price: 45,
+    originalPrice: 78,
     discount: 42,
-    badge: "UPTO 42% OFF",
+    badge: "UP TO 42% OFF",
     badgeColor: "bg-red-600",
-    emi: 292,
+    emi: 4,
     image: "https://images.unsplash.com/photo-1603252109303-275144230e7e?w=400&h=400&fit=crop",
     category: "unisex"
   },
   {
     id: 6,
     name: "Adidas Samba OG White Black",
-    price: 7999,
-    originalPrice: 10999,
+    price: 102,
+    originalPrice: 140,
     discount: 27,
     badge: "TRENDING",
     badgeColor: "bg-purple-600",
-    emi: 667,
+    emi: 9,
     image: "https://images.unsplash.com/photo-1560769629-975e13f0c470?w=400&h=400&fit=crop",
     category: "women"
   },
   {
     id: 7,
     name: "Puma Suede Classic XXl",
-    price: 5999,
-    originalPrice: 8999,
+    price: 76,
+    originalPrice: 115,
     discount: 33,
-    badge: "UPTO 33% OFF",
+    badge: "UP TO 33% OFF",
     badgeColor: "bg-red-600",
-    emi: 500,
+    emi: 6,
     image: "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=400&h=400&fit=crop",
     category: "men"
   },
   {
     id: 8,
     name: "Converse Chuck 70 High Top",
-    price: 5499,
-    originalPrice: 7499,
+    price: 70,
+    originalPrice: 96,
     discount: 27,
     badge: "CLASSIC",
     badgeColor: "bg-gray-800",
-    emi: 458,
+    emi: 6,
     image: "https://images.unsplash.com/photo-1491553895911-0055uj3a34?w=400&h=400&fit=crop",
     category: "unisex"
   },
   {
     id: 9,
     name: "Vans Old Skool Black White",
-    price: 4499,
-    originalPrice: 5999,
+    price: 58,
+    originalPrice: 77,
     discount: 25,
-    badge: "UPTO 25% OFF",
+    badge: "UP TO 25% OFF",
     badgeColor: "bg-red-600",
-    emi: 375,
+    emi: 5,
     image: "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&h=400&fit=crop",
     category: "unisex"
   },
   {
     id: 10,
     name: "Nike Air Force 1 '07 White",
-    price: 7499,
-    originalPrice: 11995,
+    price: 96,
+    originalPrice: 154,
     discount: 37,
     badge: "BESTSELLER",
     badgeColor: "bg-amber-500",
-    emi: 625,
+    emi: 8,
     image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400&h=400&fit=crop",
     category: "women"
   }
@@ -129,6 +130,7 @@ const filters = ['UNISEX', 'MEN', 'WOMEN'];
 export default function ProductShowcase() {
   const [activeFilter, setActiveFilter] = useState('UNISEX');
   const [wishlist, setWishlist] = useState(new Set());
+  const [checkoutProduct, setCheckoutProduct] = useState(null);
   const scrollRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -267,15 +269,24 @@ export default function ProductShowcase() {
                       {product.name}
                     </h3>
                     <div className="flex items-baseline gap-2 mb-1">
-                      <span className="text-base sm:text-lg font-bold text-red-600">₹{product.price.toLocaleString()}</span>
-                      <span className="text-xs text-gray-400 line-through">₹{product.originalPrice.toLocaleString()}</span>
+                      <span className="text-base sm:text-lg font-bold text-red-600">${product.price}</span>
+                      <span className="text-xs text-gray-400 line-through">${product.originalPrice}</span>
                     </div>
                     <p className="text-[10px] sm:text-xs text-gray-500 mb-2.5">
-                      EMI @INR {product.emi}/Month
+                      Pay ${product.emi}/mo
                     </p>
-                    <button className="w-full py-2 bg-black text-white text-xs font-medium rounded-lg hover:bg-gray-800 transition-colors">
-                      Explore
-                    </button>
+                    <div className="flex gap-2">
+                      <button className="flex-1 py-2 bg-black text-white text-xs font-medium rounded-lg hover:bg-gray-800 transition-colors">
+                        Explore
+                      </button>
+                      <button
+                        onClick={() => setCheckoutProduct(product)}
+                        className="py-2 px-3 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                        title="Buy Now with PayPal"
+                      >
+                        <ShoppingBag className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -283,6 +294,13 @@ export default function ProductShowcase() {
           </div>
         </div>
       </div>
+
+      {checkoutProduct && (
+        <PayPalCheckout
+          product={checkoutProduct}
+          onClose={() => setCheckoutProduct(null)}
+        />
+      )}
     </section>
   );
 }

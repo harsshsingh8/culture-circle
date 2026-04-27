@@ -5,32 +5,32 @@ const articles = [
     id: 1,
     outlet: "ANI News",
     logo: "ANI",
-    headline: "Culture Circle raises $5M to expand luxury sneaker marketplace in India",
-    description: "The Gurugram-based startup plans to use the funds to expand its offline presence and strengthen its authentication technology.",
+    headline: "Luxe Cart raises $15M to expand global luxury marketplace",
+    description: "The marketplace plans to use the funds to expand across North America, Europe, and Asia while strengthening authentication technology.",
     link: "#"
   },
   {
     id: 2,
     outlet: "The Ken",
     logo: "TK",
-    headline: "Inside India's booming resale market for luxury sneakers",
-    description: "How Culture Circle built a Rs 100 crore business by authenticating and reselling premium streetwear.",
+    headline: "Inside the booming global resale market for luxury sneakers",
+    description: "How Luxe Cart built a multi-million dollar business by authenticating and reselling premium streetwear worldwide.",
     link: "#"
   },
   {
     id: 3,
     outlet: "Economic Times",
     logo: "ET",
-    headline: "Sneaker resale market in India to hit $1B by 2027",
-    description: "Industry experts point to Gen Z's growing appetite for limited-edition drops and authenticated resale platforms.",
+    headline: "Global sneaker resale market to hit $30B by 2027",
+    description: "Industry experts point to Gen Z's growing appetite for limited-edition drops and authenticated resale platforms worldwide.",
     link: "#"
   },
   {
     id: 4,
     outlet: "ET Retail",
     logo: "ETR",
-    headline: "Culture Circle opens flagship experience store in Gurugram",
-    description: "The 4,000 sq ft store features an authentication lab, customization studio, and exclusive drops.",
+    headline: "Luxe Cart opens flagship experience stores in NYC and London",
+    description: "The new stores feature authentication labs, customization studios, and exclusive drops for local markets.",
     link: "#"
   },
   {
@@ -38,63 +38,63 @@ const articles = [
     outlet: "Cosmopolitan",
     logo: "COS",
     headline: "10 must-have sneakers for your summer wardrobe",
-    description: "From Yeezy Slides to Air Jordans, here's what's trending this season according to Culture Circle's data.",
+    description: "From Yeezy Slides to Air Jordans, here's what's trending this season according to Luxe Cart's global data.",
     link: "#"
   },
   {
     id: 6,
     outlet: "News18",
     logo: "N18",
-    headline: "How to spot fake sneakers: Expert tips from Culture Circle",
-    description: "The authentication team shares red flags every buyer should know before purchasing premium footwear.",
+    headline: "How to spot fake sneakers: Expert tips from Luxe Cart",
+    description: "The authentication team shares red flags every buyer should know before purchasing premium footwear online.",
     link: "#"
   },
   {
     id: 7,
     outlet: "Entrepreneur India",
     logo: "EI",
-    headline: "Culture Circle founders on building India's sneaker empire",
-    description: "The duo shares their journey from sneaker enthusiasts to running one of India's hottest resale platforms.",
+    headline: "Luxe Cart founders on building a global sneaker empire",
+    description: "The founders share their journey from sneaker enthusiasts to running one of the world's hottest resale platforms.",
     link: "#"
   },
   {
     id: 8,
     outlet: "The Financial Express",
     logo: "TFE",
-    headline: "Luxury streetwear brands eye India market through local partnerships",
-    description: "International labels are collaborating with platforms like Culture Circle to reach Indian consumers.",
+    headline: "Luxury streetwear brands expand globally through digital partnerships",
+    description: "International labels are collaborating with platforms like Luxe Cart to reach consumers in the US, Europe, and Russia.",
     link: "#"
   },
   {
     id: 9,
     outlet: "The Print",
     logo: "TP",
-    headline: "Why Indian millennials are spending lakhs on sneakers",
-    description: "A cultural shift sees young professionals treating limited-edition sneakers as investment assets.",
+    headline: "Why millennials worldwide are investing in rare sneakers",
+    description: "A cultural shift sees young professionals treating limited-edition sneakers as alternative investment assets.",
     link: "#"
   },
   {
     id: 10,
     outlet: "Republic Business",
     logo: "RB",
-    headline: "Culture Circle partners with global brands for exclusive India drops",
-    description: "The platform becomes the go-to destination for limited releases from Nike, Adidas, and New Balance.",
+    headline: "Luxe Cart partners with global brands for exclusive worldwide drops",
+    description: "The platform becomes the go-to destination for limited releases from Nike, Adidas, and New Balance globally.",
     link: "#"
   },
   {
     id: 11,
     outlet: "Financial Express",
     logo: "FE",
-    headline: "Sneaker authentication: The tech behind Culture Circle's promise",
-    description: "AI-powered verification and expert checkers ensure every product on the platform is 100% authentic.",
+    headline: "Sneaker authentication: The tech behind Luxe Cart's promise",
+    description: "AI-powered verification and expert checkers ensure every product on the platform is 100% authentic globally.",
     link: "#"
   },
   {
     id: 12,
     outlet: "Business Standard",
     logo: "BS",
-    headline: "Culture Circle launches mystery box feature to drive engagement",
-    description: "The gamified shopping experience lets users unbox surprise premium items at discounted prices.",
+    headline: "Luxe Cart launches mystery box feature to drive global engagement",
+    description: "The gamified shopping experience lets users unbox surprise premium items at discounted prices worldwide.",
     link: "#"
   }
 ];
