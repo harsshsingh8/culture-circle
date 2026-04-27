@@ -42,7 +42,8 @@ export function AuthProvider({ children }) {
       const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
+        signal: AbortSignal.timeout(5000) // 5 second timeout
       });
       
       const data = await res.json();
@@ -56,7 +57,19 @@ export function AuthProvider({ children }) {
       
       return { success: false, error: data.message };
     } catch (error) {
-      return { success: false, error: 'Network error. Please try again.' };
+      // Fallback to localStorage if backend is unavailable
+      console.warn('Backend unavailable, using local auth:', error.message);
+      const users = JSON.parse(localStorage.getItem('luxecart_users') || '[]');
+      const foundUser = users.find(u => u.email === email && u.password === password);
+      
+      if (foundUser) {
+        const { password: _, ...userWithoutPassword } = foundUser;
+        setUser(userWithoutPassword);
+        localStorage.setItem('luxecart_user', JSON.stringify(userWithoutPassword));
+        return { success: true };
+      }
+      
+      return { success: false, error: 'Invalid email or password. Please sign up first.' };
     }
   }, []);
 
@@ -65,7 +78,8 @@ export function AuthProvider({ children }) {
       const res = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password })
+        body: JSON.stringify({ name, email, password }),
+        signal: AbortSignal.timeout(5000) // 5 second timeout
       });
       
       const data = await res.json();
@@ -79,7 +93,31 @@ export function AuthProvider({ children }) {
       
       return { success: false, error: data.message };
     } catch (error) {
-      return { success: false, error: 'Network error. Please try again.' };
+      // Fallback to localStorage if backend is unavailable
+      console.warn('Backend unavailable, using local auth:', error.message);
+      const users = JSON.parse(localStorage.getItem('luxecart_users') || '[]');
+      const existingUser = users.find(u => u.email === email);
+      
+      if (existingUser) {
+        return { success: false, error: 'An account with this email already exists' };
+      }
+      
+      const newUser = {
+        id: Date.now(),
+        name,
+        email,
+        password,
+        createdAt: new Date().toISOString()
+      };
+      
+      users.push(newUser);
+      localStorage.setItem('luxecart_users', JSON.stringify(users));
+      
+      const { password: _, ...userWithoutPassword } = newUser;
+      setUser(userWithoutPassword);
+      localStorage.setItem('luxecart_user', JSON.stringify(userWithoutPassword));
+      
+      return { success: true };
     }
   }, []);
 
@@ -97,7 +135,8 @@ export function AuthProvider({ children }) {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(updates)
+        body: JSON.stringify(updates),
+        signal: AbortSignal.timeout(5000) // 5 second timeout
       });
       
       const data = await res.json();
@@ -111,9 +150,23 @@ export function AuthProvider({ children }) {
       
       return { success: false, error: data.message };
     } catch (error) {
-      return { success: false, error: 'Network error. Please try again.' };
+      // Fallback to localStorage
+      console.warn('Backend unavailable, updating locally:', error.message);
+      const updatedUser = { ...user, ...updates };
+      setUser(updatedUser);
+      localStorage.setItem('luxecart_user', JSON.stringify(updatedUser));
+      
+      // Update in users list too
+      const users = JSON.parse(localStorage.getItem('luxecart_users') || '[]');
+      const userIndex = users.findIndex(u => u.id === user.id);
+      if (userIndex !== -1) {
+        users[userIndex] = { ...users[userIndex], ...updates };
+        localStorage.setItem('luxecart_users', JSON.stringify(users));
+      }
+      
+      return { success: true };
     }
-  }, []);
+  }, [user]);
 
   return (
     <AuthContext.Provider

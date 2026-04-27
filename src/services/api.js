@@ -1,15 +1,40 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+import { allProducts } from '../data/products';
 
 export const api = {
   // Products
   getProducts: async () => {
-    const res = await fetch(`${API_URL}/products`);
-    return res.json();
+    try {
+      const res = await fetch(`${API_URL}/products`, {
+        signal: AbortSignal.timeout(5000)
+      });
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      console.warn('Backend unavailable, using local product data');
+      return {
+        success: true,
+        count: allProducts.length,
+        data: allProducts
+      };
+    }
   },
 
   getProduct: async (id) => {
-    const res = await fetch(`${API_URL}/products/${id}`);
-    return res.json();
+    try {
+      const res = await fetch(`${API_URL}/products/${id}`, {
+        signal: AbortSignal.timeout(5000)
+      });
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      console.warn('Backend unavailable, using local product data');
+      const product = allProducts.find(p => p.id === Number(id));
+      return {
+        success: true,
+        data: product || null
+      };
+    }
   },
 
   // Auth (handled in AuthContext)
