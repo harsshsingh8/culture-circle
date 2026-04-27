@@ -11,6 +11,11 @@ export default function ProductDetail() {
   const { addToCart, toggleWishlist, isInWishlist } = useCart();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [activeImage, setActiveImage] = useState(0);
+  const [showAdded, setShowAdded] = useState(false);
+  const [checkoutProduct, setCheckoutProduct] = useState(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -28,6 +33,13 @@ export default function ProductDetail() {
     fetchProduct();
   }, [id]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    setSelectedSize(null);
+    setQuantity(1);
+    setActiveImage(0);
+  }, [id]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -40,30 +52,6 @@ export default function ProductDetail() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p className="text-gray-500">Product not found</p>
-      </div>
-    );
-  }
-
-  const [selectedSize, setSelectedSize] = useState(null);
-  const [quantity, setQuantity] = useState(1);
-  const [activeImage, setActiveImage] = useState(0);
-  const [showAdded, setShowAdded] = useState(false);
-  const [checkoutProduct, setCheckoutProduct] = useState(null);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    setSelectedSize(null);
-    setQuantity(1);
-    setActiveImage(0);
-  }, [id]);
-
-  if (!product) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Product Not Found</h2>
-          <Link to="/" className="text-blue-600 hover:underline">Back to Home</Link>
-        </div>
       </div>
     );
   }
