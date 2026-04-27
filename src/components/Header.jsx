@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, Search, X, Heart, ShoppingBag, User } from 'lucide-react';
+import { Menu, Search, X, ShoppingBag, User } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 
 const promoMessages = [
   "MYSTERY BOX 2.0 IS LIVE - FREE SHIPPING WORLDWIDE",
@@ -14,6 +15,7 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const { cartCount } = useCart();
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -64,8 +66,15 @@ export default function Header() {
               >
                 <Search className="w-5 h-5" />
               </button>
-              <button className="hidden sm:flex p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Account">
+              <button
+                onClick={() => isAuthenticated ? navigate('/profile') : navigate('/login')}
+                className="hidden sm:flex items-center gap-2 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label={isAuthenticated ? 'Profile' : 'Login'}
+              >
                 <User className="w-5 h-5" />
+                {isAuthenticated && (
+                  <span className="text-sm font-medium">{user.name.split(' ')[0]}</span>
+                )}
               </button>
               <button
                 onClick={() => navigate('/cart')}
