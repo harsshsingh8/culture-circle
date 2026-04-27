@@ -4,6 +4,7 @@ import { Heart, ShoppingBag, Star, Truck, Shield, RotateCcw, ChevronLeft, Minus,
 import { useCart } from '../context/CartContext';
 import PayPalCheckout from '../components/PayPalButton';
 import { api } from '../services/api';
+import { getProductById } from '../data/products';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -20,12 +21,23 @@ export default function ProductDetail() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
+        console.log('Fetching product with ID:', id);
         const data = await api.getProduct(id);
-        if (data.success) {
+        console.log('Product data received:', data);
+        
+        if (data.success && data.data) {
           setProduct(data.data);
+        } else {
+          // Fallback to local data
+          console.log('Using local fallback');
+          const localProduct = getProductById(id);
+          setProduct(localProduct || null);
         }
       } catch (error) {
         console.error('Failed to fetch product:', error);
+        // Fallback to local data
+        const localProduct = getProductById(id);
+        setProduct(localProduct || null);
       } finally {
         setLoading(false);
       }

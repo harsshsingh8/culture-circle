@@ -22,14 +22,17 @@ export const api = {
 
   getProduct: async (id) => {
     try {
+      console.log('API: Fetching product', id);
       const res = await fetch(`${API_URL}/products/${id}`, {
         signal: AbortSignal.timeout(5000)
       });
       const data = await res.json();
+      console.log('API: Response', data);
       return data;
     } catch (error) {
       console.warn('Backend unavailable, using local product data');
       const product = allProducts.find(p => p.id === Number(id));
+      console.log('Found product:', product);
       return {
         success: true,
         data: product || null
