@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Heart, ShoppingBag, Star, Truck, Shield, RotateCcw, ChevronLeft, Minus, Plus, Loader, Lock } from 'lucide-react';
+import { Heart, ShoppingBag, Star, Truck, Shield, RotateCcw, ChevronLeft, Minus, Plus, Loader } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
 import PayPalCheckout from '../components/PayPalButton';
 import { api } from '../services/api';
 
@@ -10,7 +9,6 @@ export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart, toggleWishlist, isInWishlist } = useCart();
-  const { isAuthenticated } = useAuth();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -85,10 +83,7 @@ export default function ProductDetail() {
       alert('Please select a size');
       return;
     }
-    if (!isAuthenticated) {
-      navigate('/login', { state: { from: `/product/${id}` } });
-      return;
-    }
+    // Open PayPal checkout modal which will show login if needed
     setCheckoutProduct({ ...product, size: selectedSize, quantity });
   };
 

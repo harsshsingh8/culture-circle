@@ -2,55 +2,189 @@ import { useState } from 'react';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { CreditCard, X } from 'lucide-react';
+import { CreditCard, X, Mail, Lock, Eye, EyeOff, Loader } from 'lucide-react';
 
 export default function PayPalCheckout({ product, onClose }) {
   const [{ isPending }] = usePayPalScriptReducer();
   const [paidFor, setPaidFor] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, login, signup } = useAuth();
   const navigate = useNavigate();
 
-  // Require login before checkout
-  if (!isAuthenticated) {
+  // Login form state
+  const [showLogin, setShowLogin] = useState(!isAuthenticated);
+  const [isSignup, setIsSignup] = useState(false);
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [signupName, setSignupName] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  // If showing login form
+  if (showLogin && !isAuthenticated) {
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      setLoginError('');
+      setIsLoading(true);
+
+      try {
+        let result;
+        if (isSignup) {
+          result = await signup(signupName, loginEmail, loginPassword);
+        } else {
+          result = await login(loginEmail, loginPassword);
+        }
+
+        if (result.success) {
+          setShowLogin(false);
+        } else {
+          setLoginError(result.error);
+        }
+      } catch (error) {
+        setLoginError('An error occurred. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     return (
       <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 animate-fade-in-up">
-        <div className="bg-white rounded-2xl p-6 max-w-md w-full">
-          <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold mb-2">Login Required</h3>
-            <p className="text-gray-500 text-sm">Please sign in to complete your purchase</p>
-          </div>
-          
-          <div className="space-y-3">
-            <button
-              onClick={() => {
-                onClose();
-                navigate('/login', { state: { from: '/cart' } });
-              }}
-              className="w-full py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-colors"
-            >
-              Sign In
-            </button>
-            <button
-              onClick={() => {
-                onClose();
-                navigate('/signup', { state: { from: '/cart' } });
-              }}
-              className="w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Create Account
-            </button>
+        <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full max-h-[90vh] overflow-y-auto">
+          {/* Close button */}
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-bold">
+              {isSignup ? 'Create Account' : 'Sign In'}
+            </h3>
             <button
               onClick={onClose}
-              className="w-full py-3 text-gray-500 font-medium hover:text-gray-700 transition-colors"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              Cancel
+              <X className="w-5 h-5" />
             </button>
           </div>
+
+          {/* Login required message */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <p className="text-sm text-blue-700">
+              🔒 Please sign in to complete your purchase of <span className="font-semibold">{product.name}</span>
+            </p>
+          </div>
+
+          {loginError && (
+            <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg mb-4">
+              {loginError}
+            </div>
+          )}
+
+          {/* Login/Signup Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {isSignup && (
+              <div>
+                <label className="block text-sm font-medium mb-2">Full Name</label>
+                <input
+                  type="text"
+                  value={signupName}
+                  onChange={(e) => setSignupName(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                  placeholder="John Doe"
+                  required
+                />
+              </div>
+            )}
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Email</label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="email"
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                  placeholder="you@example.com"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Password</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black"
+                  placeholder={isSignup ? 'Min. 6 characters' : 'Enter your password'}
+                  required
+                  minLength={6}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3.5 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {isLoading ? (
+                <>
+                  <Loader className="w-4 h-4 animate-spin" />
+                  {isSignup ? 'Creating Account...' : 'Signing In...'}
+                </>
+              ) : (
+                isSignup ? 'Create Account & Continue' : 'Sign In & Continue'
+              )}
+            </button>
+          </form>
+
+          {/* Toggle between login and signup */}
+          <div className="mt-6 text-center text-sm text-gray-500">
+            {isSignup ? (
+              <>
+                Already have an account?{' '}
+                <button
+                  onClick={() => {
+                    setIsSignup(false);
+                    setLoginError('');
+                  }}
+                  className="text-black font-medium hover:underline"
+                >
+                  Sign In
+                </button>
+              </>
+            ) : (
+              <>
+                Don't have an account?{' '}
+                <button
+                  onClick={() => {
+                    setIsSignup(true);
+                    setLoginError('');
+                  }}
+                  className="text-black font-medium hover:underline"
+                >
+                  Sign Up
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Demo account */}
+          {!isSignup && (
+            <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+              <p className="text-xs text-gray-600 font-medium mb-1">Demo Account:</p>
+              <p className="text-xs text-gray-500">Email: demo@luxecart.com</p>
+              <p className="text-xs text-gray-500">Password: demo123</p>
+            </div>
+          )}
         </div>
       </div>
     );

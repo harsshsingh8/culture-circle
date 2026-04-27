@@ -1,14 +1,11 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Trash2, Minus, Plus, ShoppingBag, ArrowRight, ChevronLeft, Lock } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Trash2, Minus, Plus, ShoppingBag, ArrowRight, ChevronLeft } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
 import PayPalCheckout from '../components/PayPalButton';
 
 export default function CartPage() {
   const { cart, cartCount, cartTotal, removeFromCart, updateQuantity, clearCart } = useCart();
-  const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
   const [checkoutProduct, setCheckoutProduct] = useState(null);
   
   if (cart.length === 0) {
@@ -132,23 +129,13 @@ export default function CartPage() {
                 </div>
               </div>
 
-              {!isAuthenticated ? (
-                <button
-                  onClick={() => navigate('/login', { state: { from: '/cart' } })}
-                  className="w-full mt-6 py-3.5 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-                >
-                  <Lock className="w-4 h-4" />
-                  Sign In to Checkout
-                </button>
-              ) : (
-                <button
-                  onClick={() => setCheckoutProduct({ id: 'cart', name: 'Cart Total', price: total, originalPrice: total, image: cart[0]?.image })}
-                  className="w-full mt-6 py-3.5 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-                >
-                  Checkout with PayPal
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              )}
+              <button
+                onClick={() => setCheckoutProduct({ id: 'cart', name: 'Cart Total', price: total, originalPrice: total, image: cart[0]?.image })}
+                className="w-full mt-6 py-3.5 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+              >
+                Checkout with PayPal
+                <ArrowRight className="w-4 h-4" />
+              </button>
 
               <Link
                 to="/"
